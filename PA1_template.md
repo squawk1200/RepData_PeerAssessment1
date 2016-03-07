@@ -1,11 +1,7 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: yes
----
+# Reproducible Research: Peer Assessment 1
 
-```{r echo=TRUE}
+
+```r
 ## Loading and preprocessing the data
 
 ## Read the csv
@@ -20,18 +16,24 @@ activity <- activityWithNA[complete.cases(activityWithNA),]
 activityByDay <- aggregate(list(steps=activity$steps), by = list(date=activity$date), FUN = sum)
 ## Histogram of total number of steps taken each day
 hist(activityByDay$steps, xlab = "Daily Total Steps", main = "Histogram of Daily Total Steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-1-1.png)
+
+```r
 ## Calculate the mean steps per day
 meanStepsPerDay <- as.integer(mean(activityByDay$steps))
 ## Calculate the mean steps per day
 medianStepsPerDay <- as.integer(median(activityByDay$steps))
 ```
 
-Mean steps per day = `r meanStepsPerDay`
+Mean steps per day = 10766
 
-Median steps per day = `r medianStepsPerDay`
+Median steps per day = 10765
 
 
-```{r echo=TRUE}
+
+```r
 ## What is the average daily activity pattern?
 
 ## Calculate mean steps per interval across all days
@@ -44,18 +46,22 @@ maxInterval = activityByTimeInterval$interval[which(activityByTimeInterval$means
 plot(activityByTimeInterval, type = "l", xlab = "5-minute interval", ylab = "Average number of steps")
 ```
 
-5-minute interval with maximum steps (on average): `r maxInterval`
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)
 
-```{r echo=TRUE}
+5-minute interval with maximum steps (on average): 835
+
+
+```r
 ## Imputing missing values
 
 ## Total number of missing values
 totalMissingValues <- sum(is.na(activityWithNA$steps))
 ```
 
-Total number of missing values = `r totalMissingValues`
+Total number of missing values = 2304
 
-```{r echo=TRUE}
+
+```r
 ## Fill in the missing values with the mean value for that interval
 activityFilledNA <- merge(activityWithNA, activityByTimeInterval)
 activityFilledNA[which(is.na(activityFilledNA$steps)),"steps"] <- activityFilledNA[which(is.na(activityFilledNA$steps)),"meansteps"]
@@ -68,12 +74,15 @@ medianStepsPerDayFilledNA <- as.integer(median(activityFilledNAByDay$steps))
 hist(activityFilledNAByDay$steps, xlab = "Daily Total Steps", main = "Histogram of Daily Total Steps (With Missing Values Filled)")
 ```
 
-Mean steps per day (missing values filled) = `r meanStepsPerDayFilledNA`
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)
 
-Median steps per day (missing values filled) = `r medianStepsPerDayFilledNA`
+Mean steps per day (missing values filled) = 10766
+
+Median steps per day (missing values filled) = 10766
 
 
-```{r echo=TRUE}
+
+```r
 ## Are there differences in activity patterns between weekdays and weekends?
 activityFilledNA$weekday <- sapply(weekdays(as.Date(activityFilledNA$date), TRUE), function(x){if (x %in% c("Mon", "Tue", "Wed", "Thu", "Fri")) as.factor("weekday") else as.factor("weekend")})
 
@@ -82,6 +91,6 @@ activityFilledNAByTimeInterval <- (aggregate(list(meansteps=activityFilledNA$ste
 
 library(lattice)
 xyplot(meansteps~interval|weekday, data = activityFilledNAByTimeInterval, ylab="Average number of Steps", xlab="5-minute interval", layout=c(1,2), type="l")
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)
